@@ -25,9 +25,9 @@ public class CharacterPicker {
                 selected = (selected + 1) % chars.size();
             if (keys.pressed(GLFW_KEY_LEFT) || keys.pressed(GLFW_KEY_A))
                 selected = (selected - 1 + chars.size()) % chars.size();
-            if (keys.pressed(GLFW_KEY_ENTER) || keys.pressed(GLFW_KEY_Z))
+            if (keys.pressed(GLFW_KEY_Z) || keys.pressed(GLFW_KEY_ENTER))
                 return chars.get(selected);
-            if (keys.pressed(GLFW_KEY_ESCAPE))
+            if (keys.pressed(GLFW_KEY_X) || keys.pressed(GLFW_KEY_ESCAPE))
                 return null;
 
             render(selected);
@@ -74,6 +74,6 @@ public class CharacterPicker {
         TextRenderer.draw("SPEED " + sel.speed() + "   JUMP " + (-sel.jumpS()), 100, 420, 0, 0, 0, 2f);
         TextRenderer.draw(sel.special(), 100, 460, 0.2f, 0.2f, 0.2f, 1.6f);
 
-        TextRenderer.draw("LEFT/RIGHT select   ENTER confirm   ESC back", 160, 560, 0.4f, 0.4f, 0.4f, 1.5f);
+        TextRenderer.draw("LEFT/RIGHT select   Z confirm   X back", 170, 560, 0.4f, 0.4f, 0.4f, 1.5f);
     }
 }

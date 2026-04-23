@@ -26,9 +26,9 @@ public class Menu {
                 selected = (selected + 1) % OPTIONS.size();
             if (keys.pressed(GLFW_KEY_UP) || keys.pressed(GLFW_KEY_W))
                 selected = (selected - 1 + OPTIONS.size()) % OPTIONS.size();
-            if (keys.pressed(GLFW_KEY_ENTER) || keys.pressed(GLFW_KEY_Z))
+            if (keys.pressed(GLFW_KEY_Z) || keys.pressed(GLFW_KEY_ENTER))
                 return CHOICES[selected];
-            if (keys.pressed(GLFW_KEY_ESCAPE))
+            if (keys.pressed(GLFW_KEY_X) || keys.pressed(GLFW_KEY_ESCAPE))
                 return Choice.EXIT;
 
             render(selected);
@@ -61,6 +61,6 @@ public class Menu {
             }
         }
 
-        TextRenderer.draw("UP/DOWN select   ENTER confirm", 230, 540, 0.4f, 0.4f, 0.4f, 1.5f);
+        TextRenderer.draw("ARROWS select   Z confirm   X exit", 220, 540, 0.4f, 0.4f, 0.4f, 1.5f);
     }
 }

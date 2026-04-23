@@ -1,8 +1,5 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -11,8 +8,9 @@ public class Gmae {
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
     private static final float GRAVITY = 0.3f;
-    private static final float SPAWN_X = 400;
-    private static final float SPAWN_Y = 100;
+    private static final float SPAWN_X = 380;
+    private static final float SPAWN_Y = -20;
+    private static final int ROBERT_ID = 4;
 
     private long window;
 
@@ -57,25 +55,25 @@ public class Gmae {
     private void playLevel(CharacterDef def) {
         UserChar player = new UserChar(def, SPAWN_X, SPAWN_Y);
         Camera camera = new Camera(WIDTH / 2f, 0.05f);
-        List<Rect> platforms = new ArrayList<>();
-        platforms.add(new Rect(200, 500, 2000, 100));
-        platforms.add(new Rect(700, 350, 100, 150));
+        Level level = new Level();
 
         Keys keys = new Keys(window);
+        boolean isRobert = def.id() == ROBERT_ID;
 
         while (!glfwWindowShouldClose(window)) {
-            if (keys.pressed(GLFW_KEY_ESCAPE)) return;
+            if (keys.pressed(GLFW_KEY_C)
+                    || keys.pressed(GLFW_KEY_LEFT_CONTROL)
+                    || keys.pressed(GLFW_KEY_RIGHT_CONTROL)
+                    || keys.pressed(GLFW_KEY_ESCAPE)) return;
 
-            player.update(window, GRAVITY, platforms);
+            level.update();
+            player.update(window, GRAVITY, level);
             camera.follow(player.getX());
 
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
             GL11.glLoadIdentity();
+            level.render(camera.getX(), isRobert);
             player.render(camera.getX());
-            GL11.glColor3f(0f, 175f / 255f, 0f);
-            for (Rect r : platforms) {
-                r.render(camera.getX());
-            }
 
             glfwSwapBuffers(window);
             glfwPollEvents();
