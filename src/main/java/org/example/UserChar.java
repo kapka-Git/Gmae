@@ -6,6 +6,9 @@ import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL11;
 
 public class UserChar {
+    private static final int DOUBLE_JUMP_CHAR_ID = 2;
+    private static final float DOUBLE_JUMP_VEL = -8f;
+
     private final CharacterDef def;
     private final float spawnX;
     private final float spawnY;
@@ -14,6 +17,7 @@ public class UserChar {
     private float y;
     private float velY = 0;
     private boolean onGround = false;
+    private boolean doubleJumpArmed = false;
 
     public UserChar(CharacterDef def, float spawnX, float spawnY) {
         this.def = def;
@@ -31,6 +35,14 @@ public class UserChar {
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && onGround) {
             velY = def.jumpS();
             onGround = false;
+            if (def.id() == DOUBLE_JUMP_CHAR_ID) doubleJumpArmed = true;
+        }
+
+        if (def.id() == DOUBLE_JUMP_CHAR_ID
+                && doubleJumpArmed
+                && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+            velY = DOUBLE_JUMP_VEL;
+            doubleJumpArmed = false;
         }
 
         x += velX;
@@ -52,6 +64,7 @@ public class UserChar {
                     y = r.y - def.hitY();
                     velY = 0;
                     onGround = true;
+                    doubleJumpArmed = false;
                 } else if (velY < 0) {
                     y = r.y + r.h;
                     velY = 0;
@@ -66,6 +79,7 @@ public class UserChar {
         x = spawnX;
         y = -50;
         velY = 0;
+        doubleJumpArmed = false;
     }
 
     public Rect bounds() {
