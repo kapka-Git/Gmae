@@ -29,20 +29,28 @@ public class UserChar {
 
     public void update(long window, float gravity, List<Rect> platforms) {
         float velX = 0;
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) velX = -def.speed();
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) velX = def.speed();
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS
+                || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) velX = -def.speed();
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS
+                || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) velX = def.speed();
 
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && onGround) {
+        boolean jumpPressed = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS
+                || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS;
+        if (jumpPressed && onGround) {
             velY = def.jumpS();
             onGround = false;
             if (def.id() == DOUBLE_JUMP_CHAR_ID) doubleJumpArmed = true;
         }
 
-        if (def.id() == DOUBLE_JUMP_CHAR_ID
-                && doubleJumpArmed
-                && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            velY = DOUBLE_JUMP_VEL;
-            doubleJumpArmed = false;
+        if (def.id() == DOUBLE_JUMP_CHAR_ID && doubleJumpArmed) {
+            boolean doubleJumpPressed =
+                    glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS
+                    || glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS
+                    || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
+            if (doubleJumpPressed) {
+                velY = DOUBLE_JUMP_VEL;
+                doubleJumpArmed = false;
+            }
         }
 
         x += velX;
