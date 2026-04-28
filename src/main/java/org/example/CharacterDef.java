@@ -11,5 +11,5 @@ public record CharacterDef(
         int jumpS,
         int hitX,
         int hitY,
-        Color color
+        Color colour
 ) {}

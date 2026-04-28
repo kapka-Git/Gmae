@@ -133,9 +133,9 @@ public class UserChar {
 
     public void render(float cameraX) {
         GL11.glColor3f(
-                def.color().getRed() / 255f,
-                def.color().getGreen() / 255f,
-                def.color().getBlue() / 255f
+                def.colour().getRed() / 255f,
+                def.colour().getGreen() / 255f,
+                def.colour().getBlue() / 255f
         );
         bounds().render(cameraX);
     }

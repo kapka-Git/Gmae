@@ -60,9 +60,9 @@ public class CharacterPicker {
             }
 
             GL11.glColor3f(
-                    c.color().getRed() / 255f,
-                    c.color().getGreen() / 255f,
-                    c.color().getBlue() / 255f
+                    c.colour().getRed() / 255f,
+                    c.colour().getGreen() / 255f,
+                    c.colour().getBlue() / 255f
             );
             float charX = slotCenterX - c.hitX() / 2f;
             float charY = slotY + (slotH - c.hitY()) / 2f;
