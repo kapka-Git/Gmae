@@ -15,6 +15,13 @@ public class Gmae {
     private long window;
 
     public void run() {
+
+        try {
+            Jacread.jacreader("src/main/java/org/example/chars.jac");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         initWindow();
 
         Menu menu = new Menu(window);
