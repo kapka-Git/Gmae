@@ -42,7 +42,7 @@ public class Menu {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         GL11.glLoadIdentity();
 
-        TextRenderer.draw("GMAE", 310, 120, 0, 0, 0, 7f);
+        TextRenderer.draw("GMAE", 300, 120, 0, 0, 0, 1.5f);
 
         for (int i = 0; i < OPTIONS.size(); i++) {
             float x = 280;
@@ -53,14 +53,14 @@ public class Menu {
             if (i == selected) {
                 GL11.glColor3f(0, 0, 0);
                 new Rect(x, y, w, h).render(0);
-                TextRenderer.draw(OPTIONS.get(i), x + 30, y + 20, 1, 1, 1, 3.5f);
+                TextRenderer.draw(OPTIONS.get(i), x + 16, y + 43, 1, 1, 1, 0.8f);
             } else {
                 GL11.glColor3f(0.85f, 0.85f, 0.85f);
                 new Rect(x, y, w, h).render(0);
-                TextRenderer.draw(OPTIONS.get(i), x + 30, y + 20, 0, 0, 0, 3.5f);
+                TextRenderer.draw(OPTIONS.get(i), x + 16, y + 43, 0, 0, 0, 0.8f);
             }
         }
 
-        TextRenderer.draw("ARROWS select   Z confirm   X exit", 220, 540, 0.4f, 0.4f, 0.4f, 1.5f);
+        TextRenderer.draw("ARROWS select   Z confirm   X back/exit", 260, 580, 0.4f, 0.4f, 0.4f, 0.3f);
     }
 }

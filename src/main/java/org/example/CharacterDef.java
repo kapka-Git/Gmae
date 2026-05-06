@@ -11,5 +11,7 @@ public record CharacterDef(
         int jumpS,
         int hitX,
         int hitY,
-        Color colour
+        java.awt.Color colour,
+        boolean doubleJump,
+        boolean hardcore
 ) {}

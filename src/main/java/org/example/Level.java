@@ -48,6 +48,7 @@ public class Level {
                 new Rect(2090, 300, 10, 20),
                 new Rect(2200, 360, 40, 20),
                 new Rect(2200, 420, 40, 20),
+                new Rect(2560, 440, 40, 20),
                 new Rect(3160, 300, 40, 20)
         );
 
@@ -69,9 +70,9 @@ public class Level {
         );
 
         signs = List.of(
-                new WorldText("v pre alpha 1.1", 10, 10, 0f, 0.6f, 0f, 2f, true),
-                new WorldText("Wellcome to the \"CB x BF\"", 10, 50, 0f, 0f, 0f, 2.5f, true),
-                new WorldText("This is a\ncheck point", 2080, 80, 0f, 0f, 0f, 2f, false)
+                new WorldText("Wellcome to the \"CB x BF\"", 0, 30, 0f, 0f, 0f, 0.6f, true),
+                new WorldText("v pre alpha 1.1", 5, 45, 0f, 0.6f, 0f, 0.3f, true),
+                new WorldText("This is a\n check point", 2080, 100, 0f, 0f, 0f, 0.3f, false)
         );
     }
 

@@ -1,8 +1,13 @@
 package org.example;
 
-import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.w3c.dom.Text;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 public class Gmae {
     private static final int WIDTH = 800;
@@ -12,20 +17,27 @@ public class Gmae {
     private static final float SPAWN_Y = -20;
     private static final int ROBERT_ID = 4;
 
-    private long window;
+    private static List<CharacterDef> ALL = List.of();
 
     public void run() {
 
+
         try {
-            Jacread.jacreader("src/main/java/org/example/chars.jac");
+            ALL = Jacread.loadCharacters("src/main/resources/ja/chars.jac");
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
-        initWindow();
-
+        long window = initWindow();
+        try {
+            TextRenderer.init("src/main/resources/fonts/ComicSansMS3.ttf");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Menu menu = new Menu(window);
-        CharacterPicker picker = new CharacterPicker(window, Characters.ALL);
+        CharacterPicker picker = new CharacterPicker(window, ALL);
+
 
         while (!glfwWindowShouldClose(window)) {
             Menu.Choice choice = menu.run();
@@ -34,18 +46,18 @@ public class Gmae {
             CharacterDef pick = picker.run();
             if (pick == null) continue;
 
-            playLevel(pick);
+            playLevel(pick, window);
         }
 
-        cleanup();
+        cleanup(window);
     }
 
-    private void initWindow() {
+    private long initWindow() {
         if (!glfwInit()) {
             throw new IllegalStateException("GLFW init failed");
         }
 
-        window = glfwCreateWindow(WIDTH, HEIGHT, "Gmae", 0, 0);
+        long window = glfwCreateWindow(WIDTH, HEIGHT, "Gmae", 0, 0);
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
         glfwShowWindow(window);
@@ -57,9 +69,10 @@ public class Gmae {
         GL11.glLoadIdentity();
         GL11.glOrtho(0, WIDTH, HEIGHT, 0, 1, -1);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        return window;
     }
 
-    private void playLevel(CharacterDef def) {
+    private void playLevel(CharacterDef def, long window) {
         UserChar player = new UserChar(def, SPAWN_X, SPAWN_Y);
         Camera camera = new Camera(WIDTH / 2f, 0.05f);
         Level level = new Level();
@@ -87,7 +100,7 @@ public class Gmae {
         }
     }
 
-    private void cleanup() {
+    private void cleanup(long window) {
         glfwDestroyWindow(window);
         glfwTerminate();
     }

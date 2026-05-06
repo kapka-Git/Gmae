@@ -1,9 +1,10 @@
 package org.example;
 
+import org.lwjgl.opengl.GL11;
+
 import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
-import org.lwjgl.opengl.GL11;
 
 public class CharacterPicker {
     private static final int SCREEN_W = 800;
@@ -13,7 +14,7 @@ public class CharacterPicker {
 
     public CharacterPicker(long window, List<CharacterDef> chars) {
         this.window = window;
-        this.chars = chars;
+        this.chars = List.copyOf(chars);
     }
 
     public CharacterDef run() {
@@ -41,7 +42,7 @@ public class CharacterPicker {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         GL11.glLoadIdentity();
 
-        TextRenderer.draw("PICK YOUR CHARACTER", 190, 50, 0, 0, 0, 3f);
+        TextRenderer.draw("PICK YOUR CHARACTER", 170, 50, 0, 0, 0, 0.9f);
 
         float slotW = 160;
         float totalW = chars.size() * slotW;
@@ -70,10 +71,12 @@ public class CharacterPicker {
         }
 
         CharacterDef sel = chars.get(selected);
-        TextRenderer.draw(sel.name(), 100, 380, 0, 0, 0, 2.5f);
-        TextRenderer.draw("SPEED " + sel.speed() + "   JUMP " + (-sel.jumpS()), 100, 420, 0, 0, 0, 2f);
-        TextRenderer.draw(sel.special(), 100, 460, 0.2f, 0.2f, 0.2f, 1.6f);
+        TextRenderer.draw(sel.name(), 96, 400, 0, 0, 0, 1f);
+        TextRenderer.draw(sel.desc(), 100, 440, 0, 0, 0, 0.5f);
+        TextRenderer.draw(sel.special(), 100, 470, 0, 0, 0, 0.5f);
 
-        TextRenderer.draw("LEFT/RIGHT select   Z confirm   X back", 170, 560, 0.4f, 0.4f, 0.4f, 1.5f);
+        TextRenderer.draw("SPEED " + sel.speed() + "   JUMP " + (-sel.jumpS()), 96, 520, 0, 0, 0, 0.8f);
+
+        TextRenderer.draw("ARROWS select   Z confirm   X back/exit", 260, 580, 0.4f, 0.4f, 0.4f, 0.3f);
     }
 }

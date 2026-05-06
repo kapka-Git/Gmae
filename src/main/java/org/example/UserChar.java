@@ -4,8 +4,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL11;
 
 public class UserChar {
-    private static final int DOUBLE_JUMP_CHAR_ID = 2;
-    private static final int NO_CHECKPOINT_CHAR_ID = 4;
+
     private static final float DOUBLE_JUMP_VEL = -8f;
     private static final float FALL_KILL_Y = 800f;
 
@@ -16,6 +15,7 @@ public class UserChar {
     private float x;
     private float y;
     private float velY = 0;
+
     private boolean onGround = false;
     private boolean doubleJumpArmed = false;
 
@@ -26,14 +26,18 @@ public class UserChar {
         this.def = def;
         this.spawnX = spawnX;
         this.spawnY = spawnY;
+
         this.x = spawnX;
         this.y = spawnY;
+
         this.respawnX = spawnX;
         this.respawnY = spawnY;
     }
 
     public void update(long window, float gravity, Level level) {
+
         float velX = readHorizontalInput(window);
+
         handleJumpInput(window);
         handleDoubleJumpInput(window);
 
@@ -49,50 +53,66 @@ public class UserChar {
 
         y += velY;
         onGround = false;
+
         tryLandOn(level.ground);
         for (Rect o : level.obstacles) tryLandOn(o);
         for (Rect p : level.platforms) tryLandOn(p);
 
-        if (level.touchedKillzone(bounds()) != null) {
+        Rect kill = level.touchedKillzone(bounds());
+        if (kill != null) {
             teleportToRespawn();
-        } else {
-            Rect cp = level.touchedCheckpoint(bounds());
-            if (cp != null && def.id() != NO_CHECKPOINT_CHAR_ID) {
-                respawnX = cp.x;
-                respawnY = cp.y;
-            }
         }
 
-        if (y > FALL_KILL_Y) teleportToRespawn();
+        Rect cp = level.touchedCheckpoint(bounds());
+        if (cp != null && !def.hardcore()) {
+            respawnX = cp.x;
+            respawnY = cp.y;
+        }
+
+        if (y > FALL_KILL_Y) {
+            teleportToRespawn();
+        }
+
+        System.out.println(this.x + " " + this.y);
     }
 
     private float readHorizontalInput(long window) {
         boolean left = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS
                 || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS;
+
         boolean right = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS
                 || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS;
+
         if (left) return -def.speed();
         if (right) return def.speed();
         return 0;
     }
 
     private void handleJumpInput(long window) {
-        boolean jumpPressed = glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS
-                || glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS
-                || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS;
+        boolean jumpPressed =
+                glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS ||
+                        glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS ||
+                        glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS;
+
         if (jumpPressed && onGround) {
             velY = def.jumpS();
             onGround = false;
-            if (def.id() == DOUBLE_JUMP_CHAR_ID) doubleJumpArmed = true;
+
+            if (def.doubleJump()) {
+                doubleJumpArmed = true;
+            }
         }
     }
 
     private void handleDoubleJumpInput(long window) {
-        if (def.id() != DOUBLE_JUMP_CHAR_ID || !doubleJumpArmed) return;
-        boolean pressed = glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS
-                || glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS
-                || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
-        if (pressed) {
+        if (!def.doubleJump()) return;
+
+        boolean pressed =
+                glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS ||
+                        glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ||
+                        glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
+
+        if (pressed && doubleJumpArmed) {
             velY = DOUBLE_JUMP_VEL;
             doubleJumpArmed = false;
         }
@@ -100,25 +120,31 @@ public class UserChar {
 
     private void tryLandOn(Rect surface) {
         if (velY < 0) return;
+
         float top = y;
         float bottom = y + def.hitY();
         float left = x;
         float right = x + def.hitX();
+
         if (bottom > surface.y && top < surface.y
                 && right > surface.x && left < surface.x + surface.w) {
+
             y = surface.y - def.hitY();
             velY = 0;
             onGround = true;
-            if (def.id() == DOUBLE_JUMP_CHAR_ID) doubleJumpArmed = false;
+
+            if (def.doubleJump()) {
+                doubleJumpArmed = false;
+            }
         }
     }
 
     private void teleportToRespawn() {
         velY = 0;
         onGround = false;
-        if (def.id() == DOUBLE_JUMP_CHAR_ID) doubleJumpArmed = false;
+        doubleJumpArmed = false;
 
-        if (respawnX != spawnX && def.id() != NO_CHECKPOINT_CHAR_ID) {
+        if (!def.hardcore() && respawnX != spawnX) {
             x = respawnX - (def.hitX() - 20) / 2f;
             y = respawnY;
         } else {
@@ -137,6 +163,7 @@ public class UserChar {
                 def.colour().getGreen() / 255f,
                 def.colour().getBlue() / 255f
         );
+
         bounds().render(cameraX);
     }
 
